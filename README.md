@@ -1,8 +1,8 @@
 # 📘 Simple Password Manager
 
-## Requirements
+## Requirements 
 * linux bash
-* ansible-vault 2.7.9
+* ansible-vault 2.7.9: `pip install ansible==2.7.9`
 * vim
 
 ## How to Run
