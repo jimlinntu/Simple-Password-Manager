@@ -22,7 +22,6 @@ password_file=$2
 IFS= read -p $'Please enter your password:' -s -r password
 # Dump your vault password file
 vault_password_file=$(mktemp)
-echo "$vault_password_file"
 printf "%s" "${password}" > "${vault_password_file}"
 printf '\n'
 
@@ -46,5 +45,5 @@ case "${command}" in
 esac
 
 # Remove your vault password file
-rm "$vault_password_file"
+rm -f "$vault_password_file"
 exit 0
