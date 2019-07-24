@@ -8,36 +8,43 @@ fi
 
 function encode() {
     # Encrypt it
-    ansible-vault encrypt --vault-password-file=<(printf "%s" "$1") "$2"
+    ansible-vault encrypt --vault-password-file="$1" "$2"
 }
 
 function decode() {
     # Decrypt it
-    ansible-vault decrypt --vault-password-file=<(printf "%s" "$1") "$2"
+    ansible-vault decrypt --vault-password-file="$1" "$2"
 }
 
 command=$1
 password_file=$2
 # For more information please see: https://www.computerhope.com/unix/bash/read.htm
-IFS= read -p 'Please enter your password:' -s -r password
+IFS= read -p $'Please enter your password:' -s -r password
+# Dump your vault password file
+vault_password_file=$(mktemp)
+echo "$vault_password_file"
+printf "%s" "${password}" > "${vault_password_file}"
 printf '\n'
 
 case "${command}" in
     view)
-        decode "$password" "$password_file"
+        decode "$vault_password_file" "$password_file"
         view "$password_file"
-        encode "$password" "$password_file"
+        encode "$vault_password_file" "$password_file"
     ;;
     edit)
-        decode "$password" "$password_file"
+        decode "$vault_password_file" "$password_file"
         vim "$password_file"
-        encode "$password" "$password_file"
+        encode "$vault_password_file" "$password_file"
     ;;
     encode)
-        encode "$password" "$password_file"
+        encode "$vault_password_file" "$password_file"
     ;;
     decode)
-        decode "$password" "$password_file"
+        decode "$vault_password_file" "$password_file"
     ;;
 esac
+
+# Remove your vault password file
+rm "$vault_password_file"
 exit 0
